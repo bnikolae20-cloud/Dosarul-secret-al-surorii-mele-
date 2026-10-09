@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dosarul secret al surorii mele 😂</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:22px 14px;
+  font-family:system-ui,Arial,sans-serif;color:#fff;
+  background:radial-gradient(circle at top,#6538a5,#211433 65%,#100c1b);
+  text-align:center;overflow-x:hidden
+}
+main{max-width:540px;margin:auto}
+.panel{
+  background:#ffffff12;border:1px solid #ffffff2b;
+  border-radius:25px;padding:24px 18px;margin:18px 0;
+  box-shadow:0 12px 35px #0003
+}
+h1{font-size:clamp(30px,8vw,44px);line-height:1.1;margin:15px 0}
+h2{font-size:23px}
+p{line-height:1.6;color:#f0e6ff}
+.emoji{font-size:65px;animation:bob 2s infinite}
+@keyframes bob{50%{transform:translateY(-9px) rotate(4deg)}}
+button{
+  width:100%;padding:15px;margin:7px 0;border:0;
+  border-radius:15px;background:#ff78bd;color:#30122e;
+  font-size:16px;font-weight:800;cursor:pointer
+}
+button:active{transform:scale(.98)}
+.secondary{background:#ffffff18;color:white;border:1px solid #ffffff45}
+#result{font-size:19px;font-weight:800;margin-top:18px}
+.hidden{display:none}
+.tag{display:inline-block;background:#ffffff18;padding:7px 12px;border-radius:30px;font-size:13px}
+.bar{height:10px;background:#ffffff22;border-radius:10px;overflow:hidden}
+#progress{height:100%;width:0;background:#ff78bd;transition:.3s}
+.heart{position:fixed;pointer-events:none;animation:fall 2.5s linear forwards}
+@keyframes fall{to{transform:translateY(100vh) rotate(400deg);opacity:0}}
+footer{font-size:12px;color:#cbb8df;margin:25px}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">🔒 DOSAR CONFIDENȚIAL</div>
+
+  <section class="panel" id="intro">
+    <div class="emoji">🕵️‍♀️</div>
+    <h1>ATENȚIE!<br>A fost detectată o soră!</h1>
+    <p>Specialiștii noștri au descoperit o persoană suspect de amuzantă.</p>
+    <p>Suspecta: <b>sora ta</b>.<br>
+    Nivel de pericol: <b>ridicol de mare</b>.</p>
+    <button onclick="start()">🔎 Începe investigația</button>
+    <p style="font-size:12px">Apăsând butonul, accepți că ești o legendă a familiei.</p>
+  </section>
+
+  <section class="panel hidden" id="quiz">
+    <div class="bar"><div id="progress"></div></div>
+    <p id="count">Întrebarea nr. 1</p>
+    <div class="emoji" id="qemoji">🤔</div>
+    <h2 id="question"></h2>
+    <div id="answers"></div>
+  </section>
+
+  <section class="panel hidden" id="outcome">
+    <div class="emoji" id="finalEmoji">🏆</div>
+    <div class="tag">REZULTATUL EXPERTIZEI</div>
+    <h1 id="finalTitle">Legenda familiei</h1>
+    <p id="finalText"></p>
+    <button onclick="secret()">🎁 Deschide mesajul secret</button>
+    <div class="hidden" id="secretText">
+      <h2>💜 MESAJ IMPORTANT</h2>
+      <p>Oricât de mult m-ai enerva, tot sora mea preferată rămâi! 😂❤️</p>
+      <p>Mulțumesc că exiști. Chiar și atunci când activezi modul „șefa finală”.</p>
+      <p><b>Fratele tău — expert în haosul familiei 😎</b></p>
+    </div>
+    <button class="secondary" onclick="restart()">🔄 Repetă testul</button>
+  </section>
+
+  <footer>Creat cu dragoste, glume și o doză mică de nebunie ❤️</footer>
+</main>
+
+<script>
+const questions=[
+ {e:"📱",q:"Când sora spune «ies imediat», asta înseamnă…",a:[
+  ["Este deja la ușă",0],
+  ["Mai are doar 40 de minute să-și aleagă hainele",1],
+  ["Nici măcar nu s-a ridicat din pat",2]]},
+ {e:"🍟",q:"Cine are dreptul să mănânce ultima cartofă prăjită?",a:[
+  ["Cine a luat-o primul",0],
+  ["Sora. Ea are legi speciale",2],
+  ["Trebuie convocat un tribunal de familie",1]]},
+ {e:"😇",q:"Când sora spune «nu sunt supărată», trebuie să…",a:[
+  ["Fugi imediat",2],
+  ["Întrebi încă o dată dacă e sigură",1],
+  ["Oferi ceva bun și semnezi un tratat de pace",0]]},
+ {e:"💸",q:"Sora a cerut niște bani. «Niște» înseamnă…",a:[
+  ["Câțiva bănuți",0],
+  ["O sumă cu un număr necunoscut de zerouri",2],
+  ["O investiție în fericirea familiei",1]]},
+ {e:"👑",q:"Cine este adevărata vedetă a familiei?",a:[
+  ["Eu, evident",0],
+  ["Sora, dar să nu-i spuneți",2],
+  ["Suntem două personaje din același circ",1]]}
+];
+let index=0,score=0;
+function start(){
+ index=0;score=0;
+ document.getElementById("intro").classList.add("hidden");
+ document.getElementById("outcome").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ document.getElementById("secretText").classList.add("hidden");
+ showQuestion();
+}
+function showQuestion(){
+ const q=questions[index];
+ document.getElementById("count").textContent=`Întrebarea ${index+1} din ${questions.length}`;
+ document.getElementById("progress").style.width=(index/questions.length*100)+"%";
+ document.getElementById("qemoji").textContent=q.e;
+ document.getElementById("question").textContent=q.q;
+ const box=document.getElementById("answers");
+ box.innerHTML="";
+ q.a.forEach(([answer,points])=>{
+  const b=document.createElement("button");
+  b.className="secondary";b.textContent=answer;
+  b.onclick=()=>{score+=points;index++;if(index<questions.length)showQuestion();else finish()};
+  box.appendChild(b);
+ });
+}
+function finish(){
+ document.getElementById("quiz").classList.add("hidden");
+ document.getElementById("outcome").classList.remove("hidden");
+ document.getElementById("progress").style.width="100%";
+ let title,emoji,txt;
+ if(score<=3){
+  title="Îngerul liniștii";
+  emoji="😇";
+  txt="Expertiza arată că ești aproape un înger. Dar camerele de supraveghere rămân pornite, pentru orice eventualitate.";
+ }else if(score<=7){
+  title="Profesionistă în haos";
+  emoji="😂";
+  txt="Poți transforma o simplă cumpărătură de pâine într-un serial cu trei sezoane. Familia este mândră de tine. Probabil.";
+ }else{
+  title="LEGENDA HAOSULUI";
+  emoji="👑";
+  txt="Nivel de haos: MAXIM! Tu nu creezi probleme — tu creezi subiecte pentru filme. Chiar și serviciile secrete vor un autograf.";
+ }
+ document.getElementById("finalTitle").textContent=title;
+ document.getElementById("finalEmoji").textContent=emoji;
+ document.getElementById("finalText").textContent=txt;
+ confetti();
+}
+function secret(){
+ document.getElementById("secretText").classList.remove("hidden");
+ confetti();
+}
+function restart(){
+ document.getElementById("outcome").classList.add("hidden");
+ document.getElementById("secretText").classList.add("hidden");
+ document.getElementById("intro").classList.remove("hidden");
+}
+function confetti(){
+ const symbols=["💜","😂","✨","💖","🎉","⭐"];
+ for(let i=0;i<24;i++){
+  const el=document.createElement("span");
+  el.className="heart";
+  el.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  el.style.left=Math.random()*100+"vw";
+  el.style.top="-30px";
+  el.style.fontSize=(18+Math.random()*20)+"px";
+  el.style.animationDelay=Math.random()+"s";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3500);
+ }
+}
+</script>
+</body>
+  </html>
+  
